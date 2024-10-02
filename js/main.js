@@ -3,27 +3,26 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 let scene, camera, renderer, controls;
 let island, countertop, sink, roboticHand, plates = [], conveyorBelt;
-let waterParticles = [], waterHose;
 let isAnimating = false;
 let conveyorBeltTexture;
+let sceneContainer; // Declare this at the top of your file with other global variables
 
 function init() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const container = document.getElementById('scene-container');
     const aspect = container.clientWidth / container.clientHeight;
-    camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000); // Changed FOV to 60
+    camera.position.set(0, 0, 55); // Moved camera back and centered vertically
+    camera.lookAt(0, -5, 0); // Looking slightly downward
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setClearColor(0x000000, 0); // Set clear color to black, but fully transparent
     container.appendChild(renderer.domElement);
 
-    camera.position.set(0, 6, 28);
-    camera.lookAt(0, 6, 0);
-
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 6, 0);
+    controls.target.set(0, -5, 0); // Set control target to match lookAt
     controls.update();
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -33,50 +32,106 @@ function init() {
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
+    sceneContainer = new THREE.Group();
+    scene.add(sceneContainer);
+    sceneContainer.position.y = 2; // Move entire scene up
+
     createIsland();
     createPlates();
-    createWaterHose();
     startAnimationLoop();
 
     animate();
+
+    // Make sure to call this in your init function
+    adjustCameraPosition();
 }
+
 function onWindowResize() {
     const container = document.getElementById('scene-container');
     camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
+    
+    adjustCameraPosition();
+}
+
+function adjustCameraPosition() {
+    const container = document.getElementById('scene-container');
+    const aspect = container.clientWidth / container.clientHeight;
+    
+    // Define the desired width and height of the scene in 3D units
+    const desiredWidth = 40;
+    const desiredHeight = 30;
+    
+    // Calculate the field of view needed to fit the scene
+    const fov = 2 * Math.atan((desiredHeight / 2) / 50) * (180 / Math.PI);
+    camera.fov = fov;
+    
+    // Calculate the distance needed to fit the scene width
+    const distance = (desiredWidth / 2) / Math.tan((fov / 2) * (Math.PI / 180)) / aspect;
+    
+    // Adjust these values to tilt the camera view
+    const cameraHeight = 15; // Raise the camera
+    const lookAtY = -5; // Look at a point below the center
+
+    camera.position.set(0, cameraHeight, distance);
+    camera.lookAt(0, lookAtY, 0);
+    
+    camera.updateProjectionMatrix();
+    
+    controls.target.set(0, lookAtY, 0);
+    controls.update();
+    
+    // Reset scene container scale
+    sceneContainer.scale.set(1, 1, 1);
+    
+    // Move the entire scene down
+    sceneContainer.position.set(0, -5, 0); // Adjust this value to move the island down
 }
 
 window.addEventListener('resize', onWindowResize);
 
 function createIsland() {
     // Island base
-    const islandGeometry = new THREE.BoxGeometry(24, 12, 12);
+    const islandGeometry = new THREE.BoxGeometry(30, 14, 16); // Increased from 24, 12, 12
     const islandMaterial = new THREE.MeshPhongMaterial({
         color: 0xcccccc,
         transparent: true,
         opacity: 0.5
     });
     island = new THREE.Mesh(islandGeometry, islandMaterial);
-    scene.add(island);
+    sceneContainer.add(island);
 
     // Countertop
-    const countertopGeometry = new THREE.BoxGeometry(24.8, 0.4, 12.8);
+    const countertopGeometry = new THREE.BoxGeometry(30.8, 0.4, 16.8); // Increased from 24.8, 0.4, 12.8
     const countertopMaterial = new THREE.MeshPhongMaterial({ color: 0x999999 });
     countertop = new THREE.Mesh(countertopGeometry, countertopMaterial);
-    countertop.position.y = 6.2;
-    scene.add(countertop);
+    countertop.position.y = 7.2; // Increased from 6.2
+    sceneContainer.add(countertop);
 
     // Sink
-    const sinkGeometry = new THREE.BoxGeometry(8, 2, 8);
-    const sinkMaterial = new THREE.MeshPhongMaterial({ color: 0x555555 });
+    const sinkGeometry = new THREE.BoxGeometry(14, 4, 8);
+    
+    // Create stainless steel texture
+    const stainlessSteelCanvas = createStainlessSteelTexture(256, 256);
+    const stainlessSteelTexture = new THREE.CanvasTexture(stainlessSteelCanvas);
+    stainlessSteelTexture.wrapS = THREE.RepeatWrapping;
+    stainlessSteelTexture.wrapT = THREE.RepeatWrapping;
+    stainlessSteelTexture.repeat.set(2, 2); // Adjust these values to change texture tiling
+    
+    const sinkMaterial = new THREE.MeshPhongMaterial({ 
+        map: stainlessSteelTexture,
+        bumpMap: stainlessSteelTexture,
+        bumpScale: 0.05,
+        shininess: 100
+    });
+    
     sink = new THREE.Mesh(sinkGeometry, sinkMaterial);
-    sink.position.set(0, 5, 0);
-    scene.add(sink);
+    sink.position.set(4, 5, 0);
+    sceneContainer.add(sink);
 
     // Conveyor belt
-    const beltLength = 6;
-    const beltWidth = 4;
+    const beltLength = 8; // Increased from 6
+    const beltWidth = 5; // Increased from 4
     const beltGroup = new THREE.Group();
 
     // Main belt
@@ -109,15 +164,15 @@ function createIsland() {
         beltGroup.add(slat);
     }
 
-    beltGroup.position.set(2, 0.2, 0);
-    scene.add(beltGroup);
+    beltGroup.position.set(3, 0.2, 0); // Moved X from 2 to 3
+    sceneContainer.add(beltGroup);
 
     conveyorBelt = beltGroup;
 
     // Cabinet and shelves
-    const cabinetWidth = 8;
-    const cabinetHeight = 10.8;
-    const cabinetDepth = 11.6;
+    const cabinetWidth = 10; // Increased from 8
+    const cabinetHeight = 12.8; // Increased from 10.8
+    const cabinetDepth = 15.6; // Increased from 11.6
 
     // Cabinet
     const cabinetGeometry = new THREE.BoxGeometry(cabinetWidth, cabinetHeight, cabinetDepth);
@@ -127,8 +182,8 @@ function createIsland() {
         opacity: 0.5
     });
     const cabinet = new THREE.Mesh(cabinetGeometry, cabinetMaterial);
-    cabinet.position.set(-8, cabinetHeight/2 - 6, 0);
-    scene.add(cabinet);
+    cabinet.position.set(-10, cabinetHeight/2 - 7, 0); // Moved X from -8 to -10, Y adjusted
+    sceneContainer.add(cabinet);
 
     // Shelves
     const shelfGeometry = new THREE.BoxGeometry(cabinetWidth - 0.4, 0.2, cabinetDepth - 0.4);
@@ -136,18 +191,18 @@ function createIsland() {
 
     // Bottom shelf
     const bottomShelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
-    bottomShelf.position.set(-8, -4, 0);
-    scene.add(bottomShelf);
+    bottomShelf.position.set(-10, -5, 0);
+    sceneContainer.add(bottomShelf);
 
     // Middle shelf
     const middleShelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
-    middleShelf.position.set(-8, 0, 0);
-    scene.add(middleShelf);
+    middleShelf.position.set(-10, 0, 0);
+    sceneContainer.add(middleShelf);
 
     // Top shelf
     const topShelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
-    topShelf.position.set(-8, 4, 0);
-    scene.add(topShelf);
+    topShelf.position.set(-10, 5, 0);
+    sceneContainer.add(topShelf);
 }
 
 function createPlates() {
@@ -185,35 +240,8 @@ function createPlates() {
             (row - 1) * 4 // Z position: -4, 0, or 4
         );
         
-        scene.add(plateGroup);
+        sceneContainer.add(plateGroup);
         plates.push(plateGroup);
-    }
-}
-
-function createWaterHose() {
-    const hoseGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.5, 32);
-    const hoseMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
-    waterHose = new THREE.Mesh(hoseGeometry, hoseMaterial);
-    waterHose.position.set(1.5, 0.5, 0);
-    waterHose.rotation.z = Math.PI / 4;
-    scene.add(waterHose);
-
-    const particleGeometry = new THREE.SphereGeometry(0.02, 8, 8);
-    const particleMaterial = new THREE.MeshPhongMaterial({ color: 0x00ffff, transparent: true, opacity: 0.7 });
-
-    for (let i = 0; i < 50; i++) {
-        const particle = new THREE.Mesh(particleGeometry, particleMaterial);
-        particle.position.copy(waterHose.position);
-        particle.userData = {
-            velocity: new THREE.Vector3(
-                (Math.random() - 0.5) * 0.1,
-                -Math.random() * 0.1 - 0.1,
-                (Math.random() - 0.5) * 0.1
-            ),
-            lifetime: 0
-        };
-        scene.add(particle);
-        waterParticles.push(particle);
     }
 }
 
@@ -287,10 +315,10 @@ function dropPlatesOntoConveyor() {
                 return;
             }
             const plate = plates[index];
-            const targetY = 0.2;
-            const duration = 500;
+            const targetY = 0.3;
+            const duration = 600;
             const startTime = Date.now();
-            const startY = plate.position.y;
+            const startY = plate.position.y + 10;
 
             function animatePlate() {
                 const elapsedTime = Date.now() - startTime;
@@ -377,25 +405,6 @@ function placeOnShelves() {
     });
 }
 
-function animateWater() {
-    waterParticles.forEach(particle => {
-        particle.position.add(particle.userData.velocity);
-        particle.userData.lifetime += 0.016;
-
-        if (particle.userData.lifetime > 1 || particle.position.y < 0.2) {
-            particle.position.copy(waterHose.position);
-            particle.userData.velocity.set(
-                (Math.random() - 0.5) * 0.1,
-                -Math.random() * 0.1 - 0.1,
-                (Math.random() - 0.5) * 0.1
-            );
-            particle.userData.lifetime = 0;
-        }
-
-        particle.material.opacity = 0.7 * (1 - particle.userData.lifetime);
-    });
-}
-
 function animateConveyorBelt() {
     if (conveyorBelt) {
         conveyorBelt.children.forEach(child => {
@@ -413,8 +422,32 @@ function animate() {
     requestAnimationFrame(animate);
     controls.update();
     animateConveyorBelt();
-    animateWater();
     renderer.render(scene, camera);
+}
+
+function createStainlessSteelTexture(width, height) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, '#b8b8b8');
+    gradient.addColorStop(0.5, '#f0f0f0');
+    gradient.addColorStop(1, '#b8b8b8');
+
+    // Fill background
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // Add some noise for texture
+    for (let i = 0; i < width * height / 10; i++) {
+        ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.1})`;
+        ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+    }
+
+    return canvas;
 }
 
 init();
