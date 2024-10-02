@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Island Visualization</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: #f7f9fc;
+        color: #333;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        box-sizing: border-box;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        font-size: 1.2em;
+        color: #7f8c8d;
+        font-weight: 300;
+    }
+
+    #scene-container {
+        width: 100%;
+        height: 600px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    #scene-container:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    #info {
+        margin-top: 30px;
+        text-align: center;
+        color: #34495e;
+        background-color: #ecf0f1;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    #info h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+        color: #2c3e50;
+    }
+
+    #info p {
+        margin-bottom: 10px;
+    }
+
+    .feature {
+        display: inline-block;
+        margin: 10px;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9em;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doing dishes is a chore, let's make it easier and more fun!</h1>
+        <h2>Introducing the Smart Kitchen Island, where technology meets convenience</h2>
+        <div id="scene-container">
+
+        </div>
+        <div id="info">
+            <p>Use your mouse to rotate the view. Scroll to zoom in/out.</p>
+        </div>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
+                "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js"
+            }
+        }
+    </script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
