@@ -48,12 +48,60 @@
 
     #scene-container {
         width: 100%;
-        height: 70vh;
+        height: 80vh;
         background-color: #ffffff;
         border: none;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    form {
+        width: 80%;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    form textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    form button {
+        background-color: var(--secondary-color);
+        color: #ffffff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #2980b9;
     }
 </style>
 </head>
@@ -62,10 +110,17 @@
         <header>
             <h1> Counter Intelligence </h1>
             <h1>Doing dishes is a chore, let's make it easier and more fun!</h1>
-            <h2>Introducing the Smart Kitchen Island, where technology meets convenience</h2>
+            <h2>Introducing the Smart Kitchen Island, where AI & robotics meets convenience</h2>
         </header>
         <div id="scene-container">
 
+        <form name="contact" netlify>
+            Interested ?
+            <p>
+                <input type="email" name="email" placeholder="Email"/>
+            </p>
+                <button type="submit">Send</button>
+        </form>
         </div>
     </div>
     <script type="importmap">
@@ -77,6 +132,5 @@
         }
     </script>
     <script type="module" src="js/main.js"></script>
-    <script src="https://unpkg.com/three-csg-ts"></script>
 </body>
 </html>
