@@ -59,7 +59,7 @@ function adjustCameraPosition() {
     const aspect = container.clientWidth / container.clientHeight;
     
     // Define the desired width and height of the scene in 3D units
-    const desiredWidth = 40;
+    const desiredWidth = 60;
     const desiredHeight = 30;
     
     // Calculate the field of view needed to fit the scene
@@ -70,7 +70,7 @@ function adjustCameraPosition() {
     const distance = (desiredWidth / 2) / Math.tan((fov / 2) * (Math.PI / 180)) / aspect;
     
     // Adjust these values to tilt the camera view
-    const cameraHeight = 15; // Raise the camera
+    const cameraHeight = 10; // Raise the camera
     const lookAtY = -5; // Look at a point below the center
 
     camera.position.set(0, cameraHeight, distance);
