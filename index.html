@@ -1,137 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Kitchen Island</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --background-color: #ecf0f1;
-        --text-color: #34495e;
-    }
 
-    body {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        font-family: 'Poppins', sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-    }
-
-    .container {
-        width: 100%;
-        max-width: 1200px;
-        text-align: center;
-    }
-
-    h1 {
-        color: var(--primary-color);
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    h2 {
-        color: var(--secondary-color);
-        font-size: 1.5rem;
-        font-weight: 400;
-        margin-top: 0;
-        margin-bottom: 2rem;
-    }
-
-    #scene-container {
-        width: 80%;
-        height: 40vh;
-        background-color: #ffffff;
-        border: none;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    form {
-        width: 80%;
-        align-items: center;
-        max-width: 600px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    form label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-
-    form input[type="text"],
-    form input[type="email"],
-    form textarea {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    form textarea {
-        height: 100px;
-        resize: vertical;
-    }
-
-    form button {
-        background-color: var(--secondary-color);
-        color: #ffffff;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        transition: background-color 0.3s ease;
-    }
-
-    form button:hover {
-        background-color: #2980b9;
-    }
-</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kitchen Island</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles that can't be easily achieved with Tailwind */
+        #scene-container {
+            height: 50vh;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1> Counter Intelligence </h1>
-            <h1>Doing dishes is a chore, let's make it easier and more fun!</h1>
-            <h2>Introducing the Smart Kitchen Island, where AI & robotics meets convenience</h2>
-        </header>
-        <div id="scene-container">
 
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-2">Counter Intelligence</h1>
+        <h2 class="text-2xl font-semibold text-center text-blue-600 mb-8"> Where AI and Robotics Meet the Kitchen Counter </h2>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div id="scene-container" class="w-full"></div>
+            <div class="flex justify-center items-center">
+                <form name="contact" netlify class="mt-8 space-y-6 flex flex-col items-center">
+                    <div class="text-center">
+                        <h2 class="text-2xl font-bold text-gray-900">Interested? Sign up for updates!</h2>
+                    </div>
+                    <div class="rounded-md shadow-sm">
+                        <div>
+                            <input type="email" name="email" required
+                                class="w-64 appearance-none rounded-md relative block px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                placeholder="Email">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit"
+                            class="group relative flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Send
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form name="contact" netlify>
-            Interested? Sign up for updates!
-            <p>
-                <input type="email" name="email" placeholder="Email"/>
-            </p>
-                <button type="submit">Send</button>
-        </form>
+        
     </div>
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
-                "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js"
-            }
-        }
-    </script>
-    <script type="module" src="js/main.js"></script>
+          {
+      "imports": {
+        "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
+      }
+    }
+        </script>
+    <script src="js/main.js" type="module"></script>
 </body>
+
 </html>

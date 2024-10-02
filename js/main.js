@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let scene, camera, renderer, controls;
 let island, countertop, sink, roboticHand, plates = [], conveyorBelt;
@@ -8,6 +8,7 @@ let conveyorBeltTexture;
 let sceneContainer; // Declare this at the top of your file with other global variables
 
 function init() {
+    console.log("Main.js loaded")
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const container = document.getElementById('scene-container');
@@ -203,6 +204,8 @@ function createIsland() {
     const topShelf = new THREE.Mesh(shelfGeometry, shelfMaterial);
     topShelf.position.set(-10, 5, 0);
     sceneContainer.add(topShelf);
+    sceneContainer.add(island)
+    scene.add(sceneContainer)
 }
 
 function createPlates() {
